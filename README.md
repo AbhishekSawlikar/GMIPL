@@ -28,7 +28,7 @@ The checks validate retail sales performance (Value in CHF '000 and Volume in '0
 
 ---
 
-### 2. OGF Check — Derived Layer (`Cell 4`)
+### 2. OGF Check — Derived Layer
 * **Objective:** Validates whether the reporting metrics maintain parity after transformation into aggregated reporting index tables.
 * **Tables Queried:**
   * Current: `glbl_cpw_prod.derived.retailindextotal`
@@ -37,31 +37,12 @@ The checks validate retail sales performance (Value in CHF '000 and Volume in '0
 
 ---
 
-### 3. Manufacturer Check — Conformed & Derived Layers (`Cells 6 & 8`)
+### 3. Manufacturer Check — Conformed & Derived Layers
 * **Objective:** Tracks manufacturer market share shifts (e.g., `KELLOGGS`, `NESTLE`, `PRIVATE LABEL`, `SANITARIUM`, `WEETABIX`) within each market between releases.
 * **Key Metrics:**
   * `Sum_of_Value_000_CHF_Jul26` vs `Sum_of_Value_000_CHF_Jun26`
   * `Sum_of_Volume_000_Jul26` vs `Sum_of_Volume_000_Jun26`
   * Percentage delta on Value and Volume.
-
----
-
-### 4. Switzerland Segment Shift Root-Cause Analysis
-* **Trigger:** An observed variance in Switzerland's segment split:
-  * `NATURALLY DELICIOUS`: $+5.10\%$ Value / $+6.59\%$ Volume
-  * `SIMPLE GOODNESS`: $-5.06\%$ Value / $-6.56\%$ Volume
-* **Diagnostic Queries:**
-  * **Cell 10:** Identifies specific products reclassified between `dimproduct` snapshots:
-    * **Product ID `25592`**: `M CLASSIC . CEREAL FLAKES CHOCO BTL 01 ER 600 G`
-    * Prior Segment (`Jun26`): `SIMPLE GOODNESS`
-    * Current Segment (`Jul26`): `EVERYDAY WELLNESS`
-  * **Cell 12 & 13:** Isolates sales for Product `25592` to check if it caused the multi-million CHF delta. (Found zero values for this SKU, ruling it out as the root cause).
-  * **Cell 14:** Aggregates absolute value/volume for Switzerland across segments:
-    * `NATURALLY DELICIOUS`: Jul26 Value `151,927.50` vs Jun26 Value `130,267.99` ($\Delta +21,659.51\text{ CHF '000}$)
-    * `SIMPLE GOODNESS`: Jul26 Value `146,814.06` vs Jun26 Value `168,233.16` ($\Delta -21,419.10\text{ CHF '000}$)
-    * Confirms an active master data re-mapping of significant SKUs between `SIMPLE GOODNESS` and `NATURALLY DELICIOUS` within the Swiss market.
-
----
 
 ## 📊 Summary of Segment & Metric Definitions
 
@@ -85,5 +66,3 @@ The checks validate retail sales performance (Value in CHF '000 and Volume in '0
    * `glbl_cpw_prod.history_conformed.*`
    * `metadata.forex`
 3. Execute the cells sequentially to validate that month-over-month shifts remain within expected operational tolerance limits ($\pm 0.5\%$ typical baseline, with flagged anomalies reviewed individually).
-
-4. 
